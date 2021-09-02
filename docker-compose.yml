@@ -1,0 +1,88 @@
+version: '3.5'
+services:
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sujan/celery:0.1
+
+    container_name: celery
+    volumes:
+      - ./project/:/code # maps host directory to internal container directory
+    ports: 
+      - 8034:8000 # maping 8034 port of my device to containers 8000 port
+    depends_on:
+      - broker
+      - db
+
+  
+  worker:
+    build: .
+    command: ["celery", "-A", "mysite", "worker", "-l", "info"]
+ 
+    depends_on:
+      - broker  
+      - db
+
+        
+      
+  broker:
+    image: rabbitmq:3
+    ports:
+      - 5672:5672
+   
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: sujan
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: 9680
+
+    ports:
+      - 5432:5432  
+
+
+  # # RabbitMQ - queue
+  # rabbit:
+  #   hostname: rabbit
+  #   image: rabbitmq:3-management
+  #   environment:
+  #     - RABBITMQ_DEFAULT_USER=admin
+  #     - RABBITMQ_DEFAULT_PASS=mypass
+  #   ports:
+  #     - "5672:5672"  
+  #     - "15672:15672"  # here, we can access rabbitmq management plugin
+
+
+
+  
+      
+
+      
+    # RABBITMQ_DEFAULT_USER=user
+    # RABBITMQ_DEFAULT_PASS=password
+    # CELERY_BROKER=amqp://user:password@broker:5672
+    # FLOWER_BROKER=amqp://user:password@broker:5672
+
+#   db:
+#     image: postgres
+#     env_file:
+#       - .env
+#     networks:
+#       - webappnetwork
+#   web:
+#     build: ./amplypix
+#     volumes:
+#       - ./amplypix/:/code # maps host directory to internal container directory
+#     env_file:
+#       - .env
+#     ports:
+#       - "8000:8000"
+#     command: bash -c "sleep 7; python3 /code/manage.py migrate --noinput && python3 /code/manage.py runserver 0.0.0.0:8000"
+#     depends_on:
+#       - db
+#     networks:
+#       - webappnetwork
+# networks:
+#   webappnetwork:
+#       driver: bridge
