@@ -1,0 +1,51 @@
+FROM ubuntu:18.04
+
+USER root
+
+RUN mkdir -p /khalti
+WORKDIR /khalti
+
+RUN sed -i 's/archive.ubuntu/np.archive.ubuntu/g' /etc/apt/sources.list
+
+# Base requirements and Devlopment tools
+RUN apt update && apt install -y git vim wget telnet apt-utils curl build-essential libssl-dev libffi-dev \
+    python-dev libpq-dev libjpeg8 libjpeg62-dev libfreetype6 libfreetype6-dev ipython \
+    ca-certificates
+
+# PIP
+RUN apt install -y python-pip python3-pip
+
+COPY oracle-instantclient19.3-basiclite_19.3.0.0.0-2_amd64.deb ./
+RUN apt install -y libaio1
+RUN dpkg -i oracle-instantclient19.3-basiclite_19.3.0.0.0-2_amd64.deb
+RUN echo "/usr/lib/oracle/12.1/client64/lib" >/etc/ld.so.conf.d/oracle.conf
+RUN ldconfig
+
+RUN pip3 install cx_Oracle
+
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+
+RUN pip3 install gunicorn
+
+RUN apt install -y unixodbc-dev
+
+RUN pip3 install pyodbc 
+
+RUN pip3 install redis pycrypto cryptography==2.8 django-defender==0.6.2 psycopg2-binary==2.8.6 bikram==1.0.0 openpyxl==3.0.3 
+
+RUN wget https://download.docker.com/linux/ubuntu/gpg
+RUN apt-key add gpg
+RUN wget --no-check-certificate -qO - https://packages.microsoft.com/keys/microsoft.asc | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add -
+RUN echo "deb [arch=amd64] https://packages.microsoft.com/ubuntu/18.04/prod bionic main" | tee /etc/apt/sources.list.d/mssql-release.list
+RUN apt update
+RUN ACCEPT_EULA=Y apt-get install -y --allow-unauthenticated msodbcsql17
+RUN ACCEPT_EULA=Y apt-get install -y --allow-unauthenticated mssql-tools
+RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
+RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+
+RUN ipython profile create
+RUN sed -i 's/#c.Completer.use_jedi = True/c.Completer.use_jedi = False/g' /root/.ipython/profile_default/ipython_config.py
+
+RUN mkdir /khalti/minion.banco
+WORKDIR /khalti/minion.banco

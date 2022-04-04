@@ -1,0 +1,23 @@
+name: Banco CI - Develop
+
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+
+  build:
+
+    runs-on: [self-hosted]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Build the Docker image
+      run: |
+        docker build . --file Dockerfile.ubuntu.mssql --tag dockerhub.khalti.office:5000/kk-banco/banco.${{ secrets.BANK }}:${{ github.run_number }}
+        docker push dockerhub.khalti.office:5000/kk-banco/banco.${{ secrets.BANK }}:${{ github.run_number }}
+        docker tag dockerhub.khalti.office:5000/kk-banco/banco.${{ secrets.BANK }}:${{ github.run_number }} dockerhub.khalti.office:5000/kk-banco/banco.${{ secrets.BANK }}:latest
+        docker push dockerhub.khalti.office:5000/kk-banco/banco.${{ secrets.BANK }}:latest
+        echo "Pushed image docker push dockerhub.khalti.office:5000/kk-banco/banco.${{ secrets.BANK }}:${{ github.run_number }}"
