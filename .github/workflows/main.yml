@@ -29,11 +29,11 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: .
-        file: Dockerfile.ubuntu.mssql
+        file: Dockerfile
         
-        repository: kk-banco/banco.${{ secrets.BANK }}
+        repository: SujanSharma07/django-celery-example
         tags: |
-          ghcr.io/kk-banco/banco.${{ secrets.BANK }}:${{ github.run_number }}
-          ghcr.io/kk-banco/banco.${{ secrets.BANK }}:latest
+          ghcr.io/SujanSharma07/django-celery-example:${{ github.run_number }}
+          ghcr.io/SujanSharma07/django-celery-example:latest
         #push: ${{ github.ref == 'refs/heads/main' }}
         push: true
