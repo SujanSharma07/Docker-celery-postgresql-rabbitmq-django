@@ -31,9 +31,9 @@ jobs:
         context: .
         file: Dockerfile
         
-        repository: SujanSharma07/django-celery-example
+        repository: sujansharma07/django-celery-example
         tags: |
-          ghcr.io/SujanSharma07/django-celery-example:${{ github.run_number }}
-          ghcr.io/SujanSharma07/django-celery-example:latest
+          ghcr.io/sujansharma07/django-celery-example:${{ github.run_number }}
+          ghcr.io/sujansharma07/django-celery-example:latest
         #push: ${{ github.ref == 'refs/heads/main' }}
         push: true
