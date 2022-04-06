@@ -31,9 +31,9 @@ jobs:
         context: .
         file: Dockerfile
         
-        repository: sujansharma07/Docker-celery-postgresql-rabbitmq-django
+        repository: sujansharma07/django-celery-example
         tags: |
-          ghcr.io/sujansharma07/Docker-celery-postgresql-rabbitmq-django:${{ github.run_number }}
-          ghcr.io/sujansharma07/Docker-celery-postgresql-rabbitmq-django:latest
+          ghcr.io/sujansharma07/django-celery-example:${{ github.run_number }}
+          ghcr.io/sujansharma07/django-celery-example:latest
         #push: ${{ github.ref == 'refs/heads/main' }}
         push: true
