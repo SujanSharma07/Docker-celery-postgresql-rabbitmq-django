@@ -41,3 +41,5 @@ jobs:
     needs: job1
     steps:
       - name: Deploy
+        uses: actions/checkout@v2
+
