@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Job 1
+    # name: Job 1
 
     runs-on: [self-hosted]
 
@@ -40,12 +40,23 @@ jobs:
         push: true
 
 
-  job2:
-    name: Job 2
+  intermediate:
+    # name: Job 2
     needs: build
     runs-on: ubuntu-latest
 
     steps:
     - name: Dependant is Running
       run: |
-        echo "Completed job 2, but triggering failure"
+        echo "Completed intermediate and triggering deploy"
+
+  deploy:
+    needs: intermediate
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Dependant is Running
+      run: |
+        echo "Completed deploy"
+    
+    
