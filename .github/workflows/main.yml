@@ -54,7 +54,7 @@ jobs:
     
     runs-on: [self-hosted]
 
-    needs: build
+    needs: intermediate
     
     steps:
     - name: Install SSH Key
