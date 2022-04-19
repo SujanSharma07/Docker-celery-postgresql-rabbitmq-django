@@ -51,12 +51,28 @@ jobs:
         echo "Completed intermediate and triggering deploy"
 
   deploy:
-    needs: intermediate
-    runs-on: ubuntu-latest
+    
+    runs-on: [self-hosted]
 
+    needs: build
+    
     steps:
-    - name: Dependant is Running
+    - name: Install SSH Key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{secrets.SSH_PRIVATE_KEY}} 
+        known_hosts: 'SSH KEY'
+        if_key_exists: replace
+
+    - name: Adding Known Hosts
       run: |
-        echo "Completed deploy"
+        ssh-keyscan -H ${{secrets.SERVER}} >> ~/.ssh/known_hosts
+    
+    - name: Copy required files to server
+      run: |
+        rsync -avzP --include "docker-compose-prod.yml" --include "nginx/***" \
+          --exclude "*" ./ root@${{secrets.SERVER}}:/opt/${{env.PROJECT_NAME}}/
+        ssh root@${{secrets.SERVER}} "cd /opt/${{env.PROJECT_NAME}} && /usr/bin/docker-compose -f docker-compose-prod.yml down && \
+          /usr/bin/docker-compose -f docker-compose-prod.yml up -d"
     
     
