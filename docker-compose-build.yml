@@ -1,11 +1,11 @@
 version: '3.5'
 services:
   django:
-    image: ghcr.io/kk-banco/banco.${BANK}:latest
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
-    # image: sujan/celery:0.1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sujan/celery:0.1
+
     container_name: celery
     volumes:
       - ./project/:/code # maps host directory to internal container directory

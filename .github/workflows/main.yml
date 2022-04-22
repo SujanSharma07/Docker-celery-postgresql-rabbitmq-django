@@ -32,10 +32,10 @@ jobs:
         context: .
         file: Dockerfile
         
-        repository: sujansharma07/django-celery-example
+        repository: ${{ secrets.GHCR_USERNAME }}/{{ secrets.PROJ_NAME }}
         tags: |
-          ghcr.io/sujansharma07/django-celery-example:${{ github.run_number }}
-          ghcr.io/sujansharma07/django-celery-example:latest
+          ghcr.io/${{ secrets.GHCR_USERNAME }}/{{ secrets.PROJ_NAME }}:${{ github.run_number }}
+          ghcr.io/${{ secrets.GHCR_USERNAME }}/{{ secrets.PROJ_NAME }}:latest
         #push: ${{ github.ref == 'refs/heads/main' }}
         push: true
 
