@@ -70,9 +70,9 @@ jobs:
     
     - name: Copy required files to server
       run: |
-        rsync -avzP --include "docker-compose-prod.yml" --include "nginx/***" \
+        rsync -avzP --include "docker-compose.yml" --include ".env" --include "nginx/***" \
           --exclude "*" ./ root@${{secrets.SERVER}}:/opt/${{env.PROJECT_NAME}}/
-        ssh root@${{secrets.SERVER}} "cd /opt/${{env.PROJECT_NAME}} && /usr/bin/docker-compose -f docker-compose-prod.yml down && \
-          /usr/bin/docker-compose -f docker-compose-prod.yml up -d"
+        ssh root@${{secrets.SERVER}} "cd /opt/${{env.PROJECT_NAME}} && /usr/bin/docker-compose -f docker-compose.yml down && \
+          /usr/bin/docker-compose -f docker-compose.yml up -d"
     
     
