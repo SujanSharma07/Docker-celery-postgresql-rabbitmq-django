@@ -32,10 +32,11 @@ jobs:
         context: .
         file: Dockerfile
         
-        repository: ${{ secrets.GHCR_USERNAME }}/docker-celery-postgresql-rabbitmq-django
+        repository: ${{ secrets.GHCR_USERNAME }}/${{ secrets.PROJ_NAME }}
         tags: |
-          ghcr.io/${{ secrets.GHCR_USERNAME }}/docker-celery-postgresql-rabbitmq-django:${{ github.run_number }}
-          ghcr.io/${{ secrets.GHCR_USERNAME }}/docker-celery-postgresql-rabbitmq-django:latest
+          ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ secrets.PROJ_NAME }}:${{ github.run_number }}
+          ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ secrets.PROJ_NAME }}:latest
+          
         #push: ${{ github.ref == 'refs/heads/main' }}
         push: true
         # repository: kk-banco/banco.${{ secrets.BANK }}
