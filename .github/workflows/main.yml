@@ -32,10 +32,10 @@ jobs:
         context: .
         file: Dockerfile
         
-        repository: ${{ secrets.GHCR_USERNAME }}/{{ secrets.PROJ_NAME }}
+        repository: ${{ secrets.GHCR_USERNAME }}/${{ secrets.PROJ_NAME }}
         tags: |
-          ghcr.io/${{ secrets.GHCR_USERNAME }}/{{ secrets.PROJ_NAME }}:${{ github.run_number }}
-          ghcr.io/${{ secrets.GHCR_USERNAME }}/{{ secrets.PROJ_NAME }}:latest
+          ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ secrets.PROJ_NAME }}:${{ github.run_number }}
+          ghcr.io/${{ secrets.GHCR_USERNAME }}/${{ secrets.PROJ_NAME }}:latest
         #push: ${{ github.ref == 'refs/heads/main' }}
         push: true
 
