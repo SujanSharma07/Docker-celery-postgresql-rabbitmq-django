@@ -72,7 +72,7 @@ jobs:
       run: |
         sudo rsync -avzP --include "docker-compose.yml" --include ".env" --include "nginx/***" \
           --exclude "*" ./ ubuntu@${{secrets.SERVER}}:/opt/${{env.PROJECT_NAME}}/
-        ssh ubuntu@${{secrets.SERVER}} "cd /opt/${{env.PROJECT_NAME}} && sudo /usr/bin/docker-compose -f docker-compose.yml down && \
+        ssh ubuntu@${{secrets.SERVER}} "cd /opt/${{env.PROJECT_NAME}} && /usr/bin/docker-compose -f docker-compose.yml down && \
           /usr/bin/docker-compose -f docker-compose.yml up -d"
     
     
