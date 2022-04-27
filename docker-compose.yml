@@ -14,7 +14,9 @@ services:
     depends_on:
       - broker
       - db
-    command: "gunicorn mysite.wsgi:application --bind 0.0.0.0:8111"
+    command: "python manage.py runserver 0.0.0.0:8111 "
+
+    # command: "gunicorn mysite.wsgi:application --bind 0.0.0.0:8111"
   
   worker:
     build: .

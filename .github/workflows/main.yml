@@ -74,6 +74,6 @@ jobs:
           --exclude "*" ./ ubuntu@${{secrets.SERVER}}:/opt/swarm_project/
         ssh ubuntu@${{secrets.SERVER}} "cd /opt/swarm_project && export GHCR_PAT="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" && \ 
         echo $GHCR_PAT | docker login ghcr.io -u SujanSharma07 --password-stdin && /usr/bin/docker-compose -f docker-compose.yml down && \ 
-          /usr/bin/docker-compose -f docker-compose.yml up -d"
+          /usr/bin/docker-compose build && /usr/bin/docker-compose -f docker-compose.yml up -d"
     
     
