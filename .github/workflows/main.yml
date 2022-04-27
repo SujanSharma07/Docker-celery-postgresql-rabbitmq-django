@@ -70,7 +70,7 @@ jobs:
     
     - name: Copy required files to server
       run: |
-        rsync -avzP --include "docker-compose.yml" \
+        rsync -avzP --include "docker-compose.yml" --include "Dockerfile" \
           --exclude "*" ./ ubuntu@${{secrets.SERVER}}:/opt/swarm_project/
         ssh ubuntu@${{secrets.SERVER}} "cd /opt/swarm_project && /usr/bin/docker-compose -f docker-compose.yml down && \
           /usr/bin/docker-compose -f docker-compose.yml up -d"
