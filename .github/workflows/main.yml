@@ -77,7 +77,7 @@ jobs:
         ssh ubuntu@${{secrets.SERVER}} "export GHCR_PAT="${{secrets.GHCR_PAT}}" && \
           export GHCR_USERNAME="${{secrets.GHCR_USERNAME}}" && \
           export PROJ_NAME="${{secrets.PROJ_NAME}}" && \
-          ./swarm.sh -e"
+          ./swarm.sh set -x"
     
     # To remove staack from swarm: docker stack rm docker-celery-postgresql-rabbitmq-django
 
