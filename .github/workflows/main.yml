@@ -70,10 +70,10 @@ jobs:
     
     - name: Copy required files to server
       run: |
-        rsync -avzP --include "docker-compose.yml" --include "Dockerfile" --include "project" \
+        rsync -avzP --include "docker-compose.yml" --include \
           --exclude "*" ./ ubuntu@${{secrets.SERVER}}:/opt/swarm_project/
-        ssh ubuntu@${{secrets.SERVER}} "cd /opt/swarm_project && export GHCR_PAT="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" && \ 
-        echo $GHCR_PAT | docker login ghcr.io -u SujanSharma07 --password-stdin && /usr/bin/docker-compose -f docker-compose.yml down && \ 
-          /usr/bin/docker-compose build && /usr/bin/docker-compose -f docker-compose.yml up -d"
+        ssh ubuntu@${{secrets.SERVER}} "cd /opt/swarm_project && export GHCR_PAT="${{secrets.GHCR_PAT}}" && \ 
+        echo $GHCR_PAT | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin && /usr/bin/docker-compose -f docker-compose.yml down && \ 
+        /usr/bin/docker-compose -f docker-compose.yml up -d"
     
     
