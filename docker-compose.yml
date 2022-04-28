@@ -14,12 +14,14 @@ services:
     depends_on:
       - broker
       - db
+    tty: false
+
     command: "python manage.py runserver 0.0.0.0:8111 "
 
     # command: "gunicorn mysite.wsgi:application --bind 0.0.0.0:8111"
   
   worker:
-    build: .
+    image: ghcr.io/sujansharma07/docker-celery-postgresql-rabbitmq-django:latest
     command: ["celery", "-A", "mysite", "worker", "-l", "info"]
  
     depends_on:
