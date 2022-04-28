@@ -72,22 +72,14 @@ jobs:
       run: |
         rsync -avzP --include "docker-compose.yml" \
           --exclude "*" ./ ubuntu@${{secrets.SERVER}}:/opt/swarm_project/
+    - name: SSH to remote VM
+      run: |
         ssh ubuntu@${{secrets.SERVER}} "cd /opt/swarm_project && export GHCR_PAT="${{secrets.GHCR_PAT}}" && \ 
-        echo $GHCR_PAT | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin && /usr/bin/docker stack deploy --compose-file=/opt/swarm_project/docker-compose.yml ${{ secrets.PROJ_NAME }} && \ 
+        echo $GHCR_PAT | /usr/bin/docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin && \
+        /usr/bin/docker stack deploy --compose-file=/opt/swarm_project/docker-compose.yml ${{ secrets.PROJ_NAME }} && \ 
         /usr/bin/docker service scale ${{ secrets.PROJ_NAME }}=3"
     
     # To remove staack from swarm: docker stack rm docker-celery-postgresql-rabbitmq-django
-
-
-
-
-
-
-
-
-
-
-
 
 
 
