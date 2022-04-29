@@ -8,4 +8,4 @@ echo $PROJ_NAME
 
 echo ${GHCR_PAT} | /usr/bin/docker login ghcr.io -u ${GHCR_USERNAME} --password-stdin
 /usr/bin/docker stack deploy --compose-file=/opt/swarm_project/docker-compose.yml ${PROJ_NAME}
-/usr/bin/docker service scale ${secrets.PROJ_NAME}=3
+/usr/bin/docker service scale ${secrets.PROJ_NAME}=2
