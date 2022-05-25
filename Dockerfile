@@ -14,11 +14,10 @@ RUN apt install -y build-essential gcc python-dev python3-dev libjpeg8 libjpeg8-
 # PIP
 RUN apt install -y python3-pip
 
-COPY ./requirements.txt requirements.txt
+COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
 RUN ipython profile create
-RUN sed -i 's/#c.Completer.use_jedi = True/c.Completer.use_jedi = False/g' /root/.ipython/profile_default/ipython_config.py
 
 
 COPY ./project /code
