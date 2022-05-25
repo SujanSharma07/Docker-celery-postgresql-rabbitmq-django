@@ -8,18 +8,13 @@ RUN apt update
 RUN apt install -y git
 
 # Development Tools
-RUN apt install -y build-essential
-RUN apt install -y libssl-dev
-RUN apt install -y libffi-dev
-RUN apt install -y python-dev
-RUN apt install -y libpq-dev
-RUN apt install -y libjpeg8 libjpeg62-dev
-RUN apt install -y libfreetype6 libfreetype6-dev
+RUN apt install -y build-essential gcc python-dev python3-dev libjpeg8 libjpeg8-dev \
+    && apt install -y zlib1g-dev libxml2 libpq-dev libcairo2 libpango1.0-dev libgtk-3-dev
 
 # PIP
 RUN apt install -y python3-pip
 
-COPY requirements.txt requirements.txt
+COPY ./requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
 RUN ipython profile create
