@@ -1,5 +1,4 @@
 FROM ubuntu:18.04
-USER root
 RUN mkdir -p /code
 WORKDIR /code
  

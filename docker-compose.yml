@@ -16,36 +16,92 @@ services:
       - db
     tty: false
 
-    command: "python manage.py runserver 0.0.0.0:8111 "
-
-    # command: "gunicorn mysite.wsgi:application --bind 0.0.0.0:8111"
-  
-  worker:
-    image: ghcr.io/sujansharma07/docker-celery-postgresql-rabbitmq-django:latest
-    command: ["celery", "-A", "mysite", "worker", "-l", "info"]
- 
-    depends_on:
-      - broker  
-      - db
-
-        
-      
-  broker:
-    image: rabbitmq:3
+    # command: "python manage.py runserver 0.0.0.0:8111 "
+    command: "gunicorn mysite.wsgi:application --bind 0.0.0.0:8111 --log-level info --access-logfile=/code/logs/testing.log --error-logfile=/code/logs/error.log"
+  nginx:
+    image: nginx
+    volumes:
+      - ./project/assets:/usr/src/app/staticfiles
+      #- ./nginx/static:/usr/src/app/staticfiles
+      - ./nginx/media:/usr/src/app/mediafiles
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+    container_name: project_nginx
     ports:
-      - 5672:5672
-   
+      - 8000:80
+    depends_on:
+      - django
+
+    restart: always
+           
+  broker:
+    image: rabbitmq:3-management
+
+    hostname: rabbit
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=mypass
+    ports:
+      - 5672:5672  
+      - 15672:15672  # here, we can access rabbitmq management plugin
+
   db:
     image: postgres
+    container_name: project_db
     environment:
-      POSTGRES_USER: sujan
-      POSTGRES_DB: postgres
-      POSTGRES_PASSWORD: 9680
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data:consistent
+    restart: always
 
+  # worker:
+  #   image: ghcr.io/sujansharma07/docker-celery-postgresql-rabbitmq-django:latest
+  #   command: ["celery", "-A", "mysite", "worker", "-l", "info"]
+ 
+  #   depends_on:
+  #     - broker  
+  #     - db
+
+  worker:
+    image: ghcr.io/sujansharma07/docker-celery-postgresql-rabbitmq-django:latest
+    container_name: celery_worker
+    command: celery -A mysite worker --loglevel=info -f /code/logs/celery.log
+    environment:
+      DJANGO_SETTINGS_MODULE: mysite.settings
+    volumes:
+      - ./logs:/var/logs
+      - ./project:/code
+    depends_on:
+      - db
+      - broker
+    restart: always
+
+  celerybeat:
+    image: ghcr.io/sujansharma07/docker-celery-postgresql-rabbitmq-django:latest
+    container_name: project_celerybeat
+    command: celery -A mysite beat --loglevel=info -f /code/logs/celery.log --pidfile=
+    environment:
+      DJANGO_SETTINGS_MODULE: mysite.settings
+    volumes:
+      - ./logs:/var/logs
+      - ./project:/code
+    depends_on:
+      - worker
+      - broker
+      - db
+    restart: always
     # ports:
     #   - 5432:5432  
 
-
+  portainer:
+    image: 'portainer/portainer'
+    container_name: project_portainer
+    ports:
+      - 8133:8000
+      - 8933:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer/data:/data
   # # RabbitMQ - queue
   # rabbit:
   #   hostname: rabbit

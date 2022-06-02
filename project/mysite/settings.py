@@ -23,51 +23,56 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'flnh=1!tsz^4&grtw&0$2&6#n*@aybhg-vdpa-i1rc&pyv$+9c'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
+if DEBUG is True:
+	with open("/code/logs/debug.log", "a+") as ff:
+		for a in os.environ:
+			ff.write("{}{}{}{}".format('Var: ', str(a), 'Value: ', str(os.getenv(a))))
+			ff.write("\n")
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+	'django.contrib.auth',
+	'django.contrib.contenttypes',
+	'django.contrib.sessions',
+	'django.contrib.messages',
+	'django.contrib.staticfiles',
 
-    'mysite.core',
+	'mysite.core',
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'django.middleware.security.SecurityMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'mysite.urls'
 
 TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'mysite/templates')
-        ],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
+	{
+		'BACKEND': 'django.template.backends.django.DjangoTemplates',
+		'DIRS': [
+			os.path.join(BASE_DIR, 'mysite/templates')
+		],
+		'APP_DIRS': True,
+		'OPTIONS': {
+				'context_processors': [
+						'django.template.context_processors.debug',
+						'django.template.context_processors.request',
+						'django.contrib.auth.context_processors.auth',
+						'django.contrib.messages.context_processors.messages',
+				],
+		},
+	},
 ]
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
@@ -77,15 +82,15 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'sujan',
-        'PASSWORD': '9680',
-        'HOST': 'db',
-        'PORT': 5432,
-        # 'PORT': '7456',
-    }
+	'default': {
+		'ENGINE': 'django.db.backends.postgresql_psycopg2',
+		'NAME': 'postgres',
+		'USER': 'sujan',
+		'PASSWORD': '9680',
+		'HOST': 'db',
+		'PORT': 5432,
+		# 'PORT': '7456',
+	}
 }
 
 # Internationalization
@@ -109,3 +114,52 @@ STATIC_URL = '/static/'
 
 
 CELERY_BROKER_URL = 'amqp://broker'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+LOG_FILE_PATH = '/code/logs/mysite.log'
+
+LOGGING = {
+	'version': 1,
+	'disable_existing_loggers': False,
+	'formatters': {
+		'standard': {
+			'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+		},
+	},
+	'handlers': {
+		'default': {
+			'level': 'INFO',
+			'formatter': 'standard',
+			'class': 'logging.FileHandler',
+			'filename': LOG_FILE_PATH
+		},
+		'adminhandler': {  # NOTE: THIS IS NOT USED
+			'level': 'WARN',
+			'formatter': 'standard',
+			'class': 'logging.handlers.SMTPHandler',
+			'mailhost': '',  # NOTE: add value here
+			'fromaddr': 'admin@gmail.com',
+			'toaddrs': ['system@gmail.com'],
+			'subject': 'Warning/Error Log'
+		}
+	},
+	'loggers': {
+		'': {
+			'handlers': ['default'],
+			'level': 'INFO',
+			'propagate': False
+		},
+		'django.request': {
+			'handlers': ['default'],
+			'level': 'WARN',
+			'propagate': False
+		},
+		'adminlogger': {  # NOTE: THIS IS NOT USED
+			'handlers': ['adminhandler'],
+			'level': 'WARN',
+			'propagate': False
+		}
+	}
+}
